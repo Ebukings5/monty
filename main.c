@@ -1,16 +1,17 @@
+#define _GNU_SOURCE
 #include "monty.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
     FILE *file;
     stack_t *stack;
-    char *line;
+    char *line = NULL;
     size_t len = 0;
     ssize_t read;
 
     stack = NULL;
-    line = NULL;
-
     if (argc != 2)
     {
         fprintf(stderr, "USAGE: monty file\n");
@@ -24,9 +25,12 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    while ((read = getline(&line, &len, file)) != -1)
+    read = getline(&line, &len, file);
+
+    while (read != -1)
     {
         execute_opcode(&stack, 1, line);
+        read = getline(&line, &len, file);
     }
 
     fclose(file);
